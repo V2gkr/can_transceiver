@@ -17,16 +17,17 @@ int main(void){
     CanReceiver& can_receiver=CanReceiver::getInstance();
     int nbytes;
     while(1){
-        //std::cout<<"\033[2J\033[H";
+        std::cout<<"\033[H\033[2J";
         nbytes=can_receiver.GetCanMessage(&canframe,sizeof(struct can_frame));
         if(nbytes){
             nbytes=0;
-            std::cout<<"message id:"<<canframe.can_id<<std::endl;
+            std::cout<<"message id:"<<canframe.can_id<<"\n";
             std::cout<<"message data:";
             for(u_int8_t i=0;i<canframe.len;i++)
                 std::cout<<(int)canframe.data[i]<<" ";
             std::cout<<std::endl;
         }
+        // std::cout<<"\033[2J\033[H";
     }
     return 0;
 }

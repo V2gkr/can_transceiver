@@ -16,7 +16,6 @@ class CanReceiver{
     struct ifreq ifr;
     //can socket struct
     struct sockaddr_can can_addr;
-    int nbytes;
     //ctor to establish connection
     CanReceiver();
     //deletion of copy contructor
