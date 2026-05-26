@@ -1,2 +1,6 @@
 *.out
 *.o
+*.cmake
+*.txt
+CMakeFiles/
+can_receiver

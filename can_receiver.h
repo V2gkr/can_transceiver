@@ -25,6 +25,6 @@ class CanReceiver{
     public:
     //static method to get instance of CanReceiver as singleton
     static CanReceiver& getInstance();
-    int GetCanMessage(struct can_frame * frame,u_int8_t size);
+    int GetCanMessage(can_frame * frame,u_int8_t size);
     ~CanReceiver();
 };

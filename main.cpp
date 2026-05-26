@@ -6,12 +6,26 @@
 #include <linux/can/raw.h>
 #include <unistd.h>
 #include <string.h>
+#include <cstring>
 #include "can_receiver.h"
+#include <csignal>
 // #define IFNAME "can0"
 
 // struct ifreq ifr;
 // struct sockaddr_can can_addr;
+
+#define TEMP_FILTER         0x102
+#define VBUS_FILTER         0x103
+#define TELEMETRY_FILTER    0x101
+#define ALARM_FILTER        0x104
+
 struct can_frame canframe;
+CanReceiver& can_receiver=CanReceiver::getInstance();
+
+union AlarmConverter{
+    u_int8_t chars[2];
+    u_int16_t halfword;
+};
 
 union chartofloatconverter{
     u_int8_t chars[4];
@@ -20,29 +34,69 @@ union chartofloatconverter{
 
 float CharToFloat(u_int8_t *arr);
 
+void ParseCanFrame(can_frame * frame);
+
+u_int16_t ParseAlarm(u_int8_t arr[]);
+
+void signal_handler(int sig){
+    exit(sig);
+}
+
 int main(void){
-    CanReceiver& can_receiver=CanReceiver::getInstance();
+    //can_receiver=CanReceiver::getInstance();
     int nbytes;
+    signal(SIGINT,signal_handler);
+    signal(SIGTERM,signal_handler);
     while(1){
-        std::cout<<"\033[H\033[2J";
+        
         nbytes=can_receiver.GetCanMessage(&canframe,sizeof(struct can_frame));
         if(nbytes){
             nbytes=0;
-            std::cout<<"\nmessage id: 0x"<<std::hex<<canframe.can_id<<"\n";
-            std::cout<<"message data:";
-            std::cout<<CharToFloat(canframe.data);
-            // for(u_int8_t i=0;i<canframe.len;i++)
-            //     std::cout<<(int)canframe.data[i]<<" ";
-            std::cout<<std::endl;
+            std::cout<<"\033[H\033[2J";
+            ParseCanFrame(&canframe);
         }
-        // std::cout<<"\033[2J\033[H";
     }
     return 0;
 }
 
 float CharToFloat(u_int8_t arr[]){
     chartofloatconverter conv;
-    for(u_int8_t i=0;i<4;i++)
-        conv.chars[i]=arr[i];
+    std::memcpy(conv.chars, arr, 4);
     return conv.floatval;
+}
+
+u_int16_t ParseAlarm(u_int8_t arr[]){
+    AlarmConverter conv;
+    std::memcpy(conv.chars, arr, 2);
+    return conv.halfword;
+}
+
+void ParseCanFrame(can_frame * frame){
+    switch(frame->can_id){
+        case TELEMETRY_FILTER:{
+        float speed=CharToFloat(frame->data+4);
+        float current=CharToFloat(frame->data);
+        std::cout<<"\nspeed: "<<speed<<"\n";
+        std::cout<<"\ncurrent: "<<current<<std::endl;
+        }
+        break;
+        case VBUS_FILTER:{
+        float vbus=CharToFloat(frame->data);
+        std::cout<<"\nvbus: "<<vbus<<std::endl;
+        }
+        break;
+        case TEMP_FILTER:{
+        float temp=CharToFloat(frame->data);
+        std::cout<<"\nTemperature: "<<temp<<std::endl;
+        }
+        break;
+        case ALARM_FILTER:{
+        u_int16_t esc_alarm=ParseAlarm(frame->data);
+        u_int16_t Motor_alarm=ParseAlarm(frame->data+2);
+        }
+        break;
+        default:
+        std::cout<<"\nno suitable filter"<<std::endl;
+        break;
+    }
 }
