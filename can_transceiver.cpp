@@ -1,16 +1,15 @@
-#include "can_receiver.h"
+#include "can_transceiver.h"
 #include <cerrno>
 #include <system_error>
 
-CanReceiver& CanReceiver::getInstance(){
-    static CanReceiver instance;
-    return instance;
-}
+// CanTransceiver& CanTransceiver::getInstance(){
+//     static CanTransceiver instance;
+//     return instance;
+// }
 
-CanReceiver::CanReceiver(){
+CanTransceiver::CanTransceiver(std::string_view ifname){
     socket_fd=socket(PF_CAN,SOCK_RAW,CAN_RAW);
-    memcpy(ifr.ifr_ifrn.ifrn_name,IFNAME,4);
-    //strncpy(ifr.ifr_ifrn.ifrn_name,IFNAME,4);
+    strncpy(ifr.ifr_ifrn.ifrn_name,ifname.data(),ifname.size());
     ioctl(socket_fd,SIOCGIFINDEX,&ifr);
     can_addr.can_family=AF_CAN;
     can_addr.can_ifindex=ifr.ifr_ifru.ifru_ivalue;
@@ -21,21 +20,29 @@ CanReceiver::CanReceiver(){
     setsockopt(socket_fd,SOL_SOCKET,SO_RCVTIMEO,(const char*)&tv,sizeof(tv));
 }
 
-CanReceiver::~CanReceiver(){
+CanTransceiver::~CanTransceiver(){
     close(socket_fd);
 }
 
-int CanReceiver::GetCanMessage(struct can_frame * frame,u_int8_t size){
-    int nbytes=read(socket_fd,frame,size);
+int CanTransceiver::GetCanMessage(struct can_frame * frame){
+    int nbytes=read(socket_fd,frame,sizeof(can_frame));
     //if error maybe signalize somehow to user , maybe add timeout for blocking read?
     if(nbytes<0){
-        if(errno=EAGAIN || errno==EWOULDBLOCK){
+        if(errno==EAGAIN || errno==EWOULDBLOCK){
             return 0;
         }
         if(errno==EINTR){
             return 0;
         }
         throw std::system_error(errno,std::generic_category(),"error in can frame read");
+    }
+    return nbytes;
+}
+
+int CanTransceiver::SendCanMessage(can_frame * frame){
+    int nbytes=write(socket_fd,frame,sizeof(can_frame));
+    if(nbytes==-1){
+        throw std::system_error(errno,std::generic_category(),"error in can frame write");
     }
     return nbytes;
 }

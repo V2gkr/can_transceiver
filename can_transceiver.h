@@ -9,7 +9,7 @@
 #include <string.h>
 #define IFNAME "can0"
 
-class CanReceiver{
+class CanTransceiver{
     // socket to connect to can interface
     int socket_fd;
     //struct of ifreq to bind socket
@@ -17,14 +17,16 @@ class CanReceiver{
     //can socket struct
     struct sockaddr_can can_addr;
     //ctor to establish connection
-    CanReceiver();
+    
     //deletion of copy contructor
-    CanReceiver(const CanReceiver&)=delete;
+    //CanTransceiver(const CanTransceiver&)=delete;
     //deletion of assignment operator
-    CanReceiver operator=(const CanReceiver&)=delete;
+    //CanTransceiver operator=(const CanTransceiver&)=delete;
     public:
+    CanTransceiver(std::string_view ifname);
     //static method to get instance of CanReceiver as singleton
-    static CanReceiver& getInstance();
-    int GetCanMessage(can_frame * frame,u_int8_t size);
-    ~CanReceiver();
+    static CanTransceiver& getInstance();
+    [[nodiscard]] int GetCanMessage(can_frame * frame);
+    int SendCanMessage(can_frame * frame);
+    ~CanTransceiver();
 };

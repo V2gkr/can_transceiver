@@ -1,14 +1,8 @@
 #include <iostream>
-#include <sys/socket.h>
-#include <sys/ioctl.h>
-#include <net/if.h>
-#include <linux/can.h>
-#include <linux/can/raw.h>
-#include <unistd.h>
-#include <string.h>
 #include <cstring>
-#include "can_receiver.h"
+#include "can_transceiver.h"
 #include <csignal>
+#include <thread>
 // #define IFNAME "can0"
 
 // struct ifreq ifr;
@@ -19,8 +13,12 @@
 #define TELEMETRY_FILTER    0x101
 #define ALARM_FILTER        0x104
 
-struct can_frame canframe;
-CanReceiver& can_receiver=CanReceiver::getInstance();
+#define ESC_ONOFF_FILTER    0x201
+#define ESC_SET_SPEED       0x202
+std::string_view sv("can0");
+CanTransceiver can_trx(sv);
+
+//CanTransceiver& can_receiver=CanTransceiver::getInstance();
 
 union AlarmConverter{
     u_int8_t chars[2];
@@ -42,21 +40,41 @@ void signal_handler(int sig){
     exit(sig);
 }
 
-int main(void){
-    //can_receiver=CanReceiver::getInstance();
-    int nbytes;
-    signal(SIGINT,signal_handler);
-    signal(SIGTERM,signal_handler);
+void ReceiveThread(){
+    struct can_frame canframe_rx;
     while(1){
-        
-        nbytes=can_receiver.GetCanMessage(&canframe,sizeof(struct can_frame));
-        if(nbytes){
+        if(int nbytes=can_trx.GetCanMessage(&canframe_rx)){
             nbytes=0;
             std::cout<<"\033[H\033[2J";
-            ParseCanFrame(&canframe);
+            ParseCanFrame(&canframe_rx);
         }
     }
-    return 0;
+}
+
+void TransmitThread(){
+    struct can_frame canframe_tx;
+    canframe_tx.can_dlc=1;
+    canframe_tx.can_id=ESC_ONOFF_FILTER;
+    canframe_tx.data[0]=0x01;
+    can_trx.SendCanMessage(&canframe_tx);
+    while(1){
+        //writes should be coming outside , or some time-controlled transmission
+    }
+}
+
+int main(void){
+    
+    pthread_t rx_tid,tx_tid;
+    
+    signal(SIGINT,signal_handler);
+    signal(SIGTERM,signal_handler);
+    std::thread rx_thread(ReceiveThread);
+    std::thread tx_thread(TransmitThread);
+
+    rx_thread.join();
+    tx_thread.join();
+
+    return EXIT_SUCCESS;
 }
 
 float CharToFloat(u_int8_t arr[]){
