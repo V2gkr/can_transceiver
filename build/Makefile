@@ -117,48 +117,48 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named can_receiver
+# Target rules for targets named can_transceiver
 
 # Build rule for target.
-can_receiver: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 can_receiver
-.PHONY : can_receiver
+can_transceiver: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 can_transceiver
+.PHONY : can_transceiver
 
 # fast build rule for target.
-can_receiver/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_receiver.dir/build.make CMakeFiles/can_receiver.dir/build
-.PHONY : can_receiver/fast
+can_transceiver/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_transceiver.dir/build.make CMakeFiles/can_transceiver.dir/build
+.PHONY : can_transceiver/fast
 
-can_receiver.o: can_receiver.cpp.o
-.PHONY : can_receiver.o
+can_transceiver.o: can_transceiver.cpp.o
+.PHONY : can_transceiver.o
 
 # target to build an object file
-can_receiver.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_receiver.dir/build.make CMakeFiles/can_receiver.dir/can_receiver.cpp.o
-.PHONY : can_receiver.cpp.o
+can_transceiver.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_transceiver.dir/build.make CMakeFiles/can_transceiver.dir/can_transceiver.cpp.o
+.PHONY : can_transceiver.cpp.o
 
-can_receiver.i: can_receiver.cpp.i
-.PHONY : can_receiver.i
+can_transceiver.i: can_transceiver.cpp.i
+.PHONY : can_transceiver.i
 
 # target to preprocess a source file
-can_receiver.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_receiver.dir/build.make CMakeFiles/can_receiver.dir/can_receiver.cpp.i
-.PHONY : can_receiver.cpp.i
+can_transceiver.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_transceiver.dir/build.make CMakeFiles/can_transceiver.dir/can_transceiver.cpp.i
+.PHONY : can_transceiver.cpp.i
 
-can_receiver.s: can_receiver.cpp.s
-.PHONY : can_receiver.s
+can_transceiver.s: can_transceiver.cpp.s
+.PHONY : can_transceiver.s
 
 # target to generate assembly for a file
-can_receiver.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_receiver.dir/build.make CMakeFiles/can_receiver.dir/can_receiver.cpp.s
-.PHONY : can_receiver.cpp.s
+can_transceiver.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_transceiver.dir/build.make CMakeFiles/can_transceiver.dir/can_transceiver.cpp.s
+.PHONY : can_transceiver.cpp.s
 
 main.o: main.cpp.o
 .PHONY : main.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_receiver.dir/build.make CMakeFiles/can_receiver.dir/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_transceiver.dir/build.make CMakeFiles/can_transceiver.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -166,7 +166,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_receiver.dir/build.make CMakeFiles/can_receiver.dir/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_transceiver.dir/build.make CMakeFiles/can_transceiver.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -174,7 +174,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_receiver.dir/build.make CMakeFiles/can_receiver.dir/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/can_transceiver.dir/build.make CMakeFiles/can_transceiver.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -185,10 +185,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... can_receiver"
-	@echo "... can_receiver.o"
-	@echo "... can_receiver.i"
-	@echo "... can_receiver.s"
+	@echo "... can_transceiver"
+	@echo "... can_transceiver.o"
+	@echo "... can_transceiver.i"
+	@echo "... can_transceiver.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
