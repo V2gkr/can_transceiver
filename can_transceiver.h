@@ -7,7 +7,7 @@
 #include <linux/can/raw.h>
 #include <unistd.h>
 #include <string.h>
-
+#define IFNAME "can0"
 
 class CanTransceiver{
     // socket to connect to can interface

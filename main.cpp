@@ -16,7 +16,7 @@
 #define ESC_ONOFF_FILTER    0x201
 #define ESC_SET_SPEED       0x202
 
-#define IFNAME "can0"
+
 
 CanTransceiver& can_trx=CanTransceiver::getInstance(IFNAME);
 
