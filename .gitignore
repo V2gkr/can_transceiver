@@ -4,3 +4,4 @@
 *.txt
 CMakeFiles/
 can_receiver
+can_transceiver
