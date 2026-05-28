@@ -2,10 +2,10 @@
 #include <cerrno>
 #include <system_error>
 
-// CanTransceiver& CanTransceiver::getInstance(){
-//     static CanTransceiver instance;
-//     return instance;
-// }
+CanTransceiver& CanTransceiver::getInstance(std::string_view ifname){
+    static CanTransceiver instance(ifname);
+    return instance;
+}
 
 CanTransceiver::CanTransceiver(std::string_view ifname){
     socket_fd=socket(PF_CAN,SOCK_RAW,CAN_RAW);

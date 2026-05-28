@@ -15,10 +15,10 @@
 
 #define ESC_ONOFF_FILTER    0x201
 #define ESC_SET_SPEED       0x202
-std::string_view sv("can0");
-CanTransceiver can_trx(sv);
 
-//CanTransceiver& can_receiver=CanTransceiver::getInstance();
+#define IFNAME "can0"
+
+CanTransceiver& can_trx=CanTransceiver::getInstance(IFNAME);
 
 union AlarmConverter{
     u_int8_t chars[2];
